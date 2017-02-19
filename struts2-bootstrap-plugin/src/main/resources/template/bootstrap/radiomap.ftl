@@ -18,6 +18,45 @@
  * under the License.
  */
 -->
-<#include "/${parameters.templateDir}/bootstrap/controlheader.ftl" />
+<#assign hasFieldErrors = fieldErrors?? && fieldErrors[parameters.name]??/>
+<#if hasFieldErrors>
+    <#list fieldErrors[parameters.name] as error>
+    <span class="errorMessage">${error?html}</span><#t/>
+    </#list>
+</#if>
+
+<#if (parameters.dynamicAttributes?? && parameters.dynamicAttributes?size > 0 && parameters.dynamicAttributes["labelCssClass"]??)><#rt/>
+    <#assign labelCssClass = parameters.dynamicAttributes.remove("labelCssClass")/><#rt/>
+<#else>
+    <#assign labelCssClass ><@s.property value="#s2b_form_label_class" /></#assign><#rt/>
+</#if><#rt/>
+<#if (parameters.dynamicAttributes?? && parameters.dynamicAttributes?size > 0 && parameters.dynamicAttributes["elementCssClass"]??)><#rt/>
+    <#assign elementCssClass = parameters.dynamicAttributes.remove("elementCssClass")/><#rt/>
+<#else>
+    <#assign elementCssClass ><@s.property value="#s2b_form_element_class" /></#assign><#rt/>
+</#if><#rt/>
+
+<div class="form-group <#rt/>
+<#if hasFieldErrors>
+ has-error has-feedback<#rt/>
+</#if>
+ ${parameters.cssClass?default('')?html}"><#rt/>
+<#if parameters.cssStyle??> style="${parameters.cssStyle?html}"<#rt/>
+</#if>
+<#if parameters.label??>
+    <label class="${labelCssClass?html} /> control-label">
+        <#if parameters.required?default(false) && parameters.requiredposition?default("right") != 'right'>
+            <span class="required">*</span><#t/>
+        </#if>
+    ${parameters.label?html}<#t/>
+        <#if parameters.required?default(false) && parameters.requiredposition?default("right") == 'right'>
+            <span class="required">*</span><#t/>
+        </#if>
+    ${parameters.labelseparator?default("")?html}<#t/>
+        <#include "/${parameters.templateDir}/bootstrap/tooltip.ftl" />
+    </label><#rt/>
+</#if>
+    <div class="${elementCssClass?html} controls">
+    <#lt/>
 <#include "/${parameters.templateDir}/bootstrap/simple/radiomap.ftl" />
 <#include "/${parameters.templateDir}/bootstrap/controlfooter.ftl" /><#nt/>
